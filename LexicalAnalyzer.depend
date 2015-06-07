@@ -1,0 +1,21 @@
+# depslib dependency file v1.0
+1433443588 source:c:\users\daniel\desktop\systems software\vector.c
+	<stdio.h>
+	<stdlib.h>
+	"vector.h"
+
+1433444477 c:\users\daniel\desktop\systems software\vector.h
+
+1433722014 source:c:\users\daniel\desktop\module 2\lexicalanalyzer\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"vector.h"
+
+1433461004 c:\users\daniel\desktop\module 2\lexicalanalyzer\vector.h
+
+1433461019 source:c:\users\daniel\desktop\module 2\lexicalanalyzer\vector.c
+	<stdio.h>
+	<stdlib.h>
+	"vector.h"
+
