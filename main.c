@@ -27,8 +27,11 @@ token_t token;
 vector codeAry; // Dynamic array structure for storing clean code input
 
 
-void outputCleanTxt(); // creates cleaninput.txt and puts input into code array
-void lexemeTable();     // creates lexeme table by analyzing code array character by character through deterministic finite automaton
+void outputCleanTxt();          // creates cleaninput.txt and puts input into code array
+void lexemeTable();             // creates lexeme table by analyzing code array character by character through deterministic finite automaton
+int isLetter(char myChar);      // checks if character is [A-Ba-B]
+int isDigit(char myChar);       // checks if character is [0-9]
+int isSpecial(char myChar);     // checks for special characters (e.g. ' ', '\n', '\t' ...)
 
 int main()
 {
@@ -37,10 +40,29 @@ int main()
 
 
     printf("%s\n", codeAry.data);
+   // printf("%d\n", codeAry.size);
+   // printf("%d\n", codeAry.capacity);
+
+
+
+
     vectorFree(&codeAry);
 
-
     return 0;
+}
+void lexemeTable()
+{
+    int state = 0;
+    int i;
+
+    token.class = -1;
+    token.lexeme[0] = '\0';
+
+    for (i = 0; i < codeAry.size; i++)
+    {
+
+    }
+
 }
 
 void outputCleanTxt()
@@ -64,7 +86,7 @@ void outputCleanTxt()
         first = (char)fgetc(fptr);
 
         // if we encounter a forward slash, look ahead one character for comment indicator
-        if (first == '/')
+        if (first == '/' && commentFlag == 0)
         {
             second = (char)fgetc(fptr);
 
@@ -72,13 +94,13 @@ void outputCleanTxt()
             if (second == '*')
                 commentFlag = 1;
 
-            // else, check whether to append the two characters to our char array
-            else if (commentFlag == 0 && second != EOF)
+            // else, append one or two characters to the char array
+            else if (!feof(fptr))
             {
                 vectorAppend(&codeAry, first);
                 vectorAppend(&codeAry, second);
             }
-             else if (commentFlag == 0)
+            else
             {
                 vectorAppend(&codeAry, first);
             }
@@ -93,7 +115,7 @@ void outputCleanTxt()
 
         }
 
-        else if (commentFlag == 0)
+        else if (commentFlag == 0 && !feof(fptr))
         {
             vectorAppend(&codeAry, first);
 

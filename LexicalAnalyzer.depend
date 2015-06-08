@@ -19,3 +19,16 @@
 	<stdlib.h>
 	"vector.h"
 
+1433726397 source:c:\users\daniel\desktop\lexianalyzer\lexicalanalyzer\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"vector.h"
+
+1433461004 c:\users\daniel\desktop\lexianalyzer\lexicalanalyzer\vector.h
+
+1433461019 source:c:\users\daniel\desktop\lexianalyzer\lexicalanalyzer\vector.c
+	<stdio.h>
+	<stdlib.h>
+	"vector.h"
+

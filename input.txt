@@ -3,3 +3,70 @@ begin
   y := 3; /*This is a comment*/
   x := y + 56;
 end.
+/*
+void outputCleanTxt()
+{
+    FILE* fptr = fopen("input.txt", "r");
+    FILE* outPtr = fopen("cleaninput.txt", "w");
+
+    char first, second;
+/*
+    // error checking
+    if (fptr == NULL || outPtr == NULL)
+    {
+        printf("Error reading input.txt or writing cleaninput.txt, shutting program down.\n");
+        exit(1);
+    }
+*//*
+    int commentFlag = 0;
+
+    while (!feof(fptr)) // tests end of file
+    {
+        first = (char)fgetc(fptr);
+
+        // if we encounter a forward slash, look ahead one character for comment indicator
+        if (first == '/')
+        {
+            second = (char)fgetc(fptr);
+
+            // if the second character is a star, we have a comment declaration.
+            if (second == '*')
+                commentFlag = 1;
+
+            // else, check whether to append the two characters to our char array
+            else if (commentFlag == 0 && !feof(fptr))
+            {
+                vectorAppend(&codeAry, first);
+                vectorAppend(&codeAry, second);
+            }
+             else if (commentFlag == 0)
+            {
+                vectorAppend(&codeAry, first);
+            }
+        }
+
+        else if (first == '*' && commentFlag == 1)
+        {
+            second = (char)fgetc(fptr);
+
+            if (second == '/')
+                commentFlag = 0;
+
+        }
+
+        else if (commentFlag == 0 && !feof(fptr))
+        {
+            vectorAppend(&codeAry, first);
+
+        }
+
+    }
+
+    fprintf(outPtr, "%s", codeAry.data); // put our code data into the cleaninput text file
+
+    fclose(fptr);
+    fclose(outPtr);
+
+
+}
+*/
