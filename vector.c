@@ -32,6 +32,16 @@ void vectorAppend(vector* vec, char val)
 
 }
 
+void vectorAppendString(vector* vec, char* val)
+{
+  int i;
+  for (i = 0; val[i] != '\0'; i++)
+  {
+    vectorAppend(vec, val[i]);
+  }
+  
+}
+
 char vectorGet(vector* vec, int index)
 {
     if (index < 0 || index >= vec->size)

@@ -25,6 +25,8 @@ typedef enum {
 
 token_t token;
 vector codeAry; // Dynamic array structure for storing clean code input
+vector aryLexTable; // For lexemetable.txt
+vector aryLexList; // For lexemelist.txt
 
 
 void outputCleanTxt();          // creates cleaninput.txt and puts input into code array
@@ -33,6 +35,7 @@ int isLetter(char myChar);      // checks if character is [A-Ba-B]
 int isDigit(char myChar);       // checks if character is [0-9]
 int isSpecial(char myChar);     // checks for special characters (e.g. ' ', '\n', '\t' ...)
 void cleanLexeme();
+char* IntToString(int number);     // Takes an integer and returns it in string format
 
 int hasWordAtPos(char * subStr, int index); // checks codeAry for specified token
 
@@ -40,13 +43,19 @@ int hasWordAtPos(char * subStr, int index); // checks codeAry for specified toke
 int main()
 {
     vectorInit(&codeAry);
+    vectorInit(&aryLexTable);
+    vectorInit(&aryLexList);
+  
     outputCleanTxt();
 
 
-    printf("%s\n", codeAry.data);
-    printf("%d\n", hasWordAtPos("var", 0));
+    //printf("%s\n", codeAry.data);
+    //printf("%d\n", hasWordAtPos("var", 0));
 
     lexemeTable();
+    printVector(&aryLexTable);
+  
+  
     printf("\n");
    // printf("%d\n", codeAry.size);
    // printf("%d\n", codeAry.capacity);
@@ -72,9 +81,13 @@ void lexemeTable()
 
     token.class = -1;
     cleanLexeme();
+  
+    // Setting up the header for lexemetable.txt
+    vectorAppendString(&aryLexTable, "lexeme\t\ttoken type\n");
+  // At the end of this function (lexemeTable()) the vector aryLexTable contains the character data for lexemetable.txt completely and correctly (as far as I know)
 
-    //Something needs to be done to check that codeAry.data[i+1] isn't index out of bounds.
-    //Maybe pad a space as a last index and run this loop while (i < codeAry.size - 1) ?
+    //Something needs to be done to check that codeAry.data[i+n] isn't index out of bounds
+    //before attempting to access it to avoid Index Out of Bounds exceptions or seg faults.
 
 
     vectorAppend(&codeAry, ' ');
@@ -294,9 +307,17 @@ void lexemeTable()
           i++;
 
           //Token complete by here only when token.class != -1.
-          if (token.class > -1)
-            printf("%d %s | ", token.class, token.lexeme);
-
+        
+          //if (token.class > -1)
+          //  printf("%d %s | ", token.class, token.lexeme);
+        
+        if (token.class > -1)
+        {
+          vectorAppendString(&aryLexTable, token.lexeme);
+          vectorAppendString(&aryLexTable, "\t\t");
+          vectorAppendString(&aryLexTable, IntToString(token.class));
+          vectorAppend(&aryLexTable, '\n');
+        }
           token.class = -1;
           cleanLexeme();
 
@@ -321,9 +342,17 @@ void lexemeTable()
             }
 
             //Token complete by here only when token.class != -1.
-          if (token.class > -1)
-            printf("%d %s | ", token.class, token.lexeme);
-
+        
+          //if (token.class > -1)
+          //  printf("%d %s | ", token.class, token.lexeme);
+        
+        if (token.class > -1)
+        {
+          vectorAppendString(&aryLexTable, token.lexeme);
+          vectorAppendString(&aryLexTable, "\t\t");
+          vectorAppendString(&aryLexTable, IntToString(token.class));
+          vectorAppend(&aryLexTable, '\n');
+        }
           token.class = -1;
           cleanLexeme();
 
@@ -346,9 +375,19 @@ void lexemeTable()
                 break;
             }
 
-             //Token complete by here only when token.class != -1.
-          if (token.class > -1)
-            printf("%d %s | ", token.class, token.lexeme);
+          //Token complete by here only when token.class != -1.
+        
+          //if (token.class > -1)
+          //  printf("%d %s | ", token.class, token.lexeme);
+        
+        if (token.class > -1)
+        {
+          vectorAppendString(&aryLexTable, token.lexeme);
+          vectorAppendString(&aryLexTable, "\t\t");
+          vectorAppendString(&aryLexTable, IntToString(token.class));
+          vectorAppend(&aryLexTable, '\n');
+        }
+
 
           token.class = -1;
           cleanLexeme();
@@ -358,80 +397,12 @@ void lexemeTable()
           break;
 
 
-          // Check first letter of Reserved Words--------------------------------------------
-
-          // Will need to check at end for rel-ops and special symbols, begin<=123 is lexically correct
-          // Will make isRelOpOrSpecial(int index) function
-
-          /*
-          else if (codeAry.data[i] == 'b')
-          {
-            token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
-            if (codeAry.data[last_index] == 'e')
-            {
-              token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index];
-              if (codeAry.data[last_index + 1] == 'g')
-              {
-                token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 1];
-                if (codeAry.data[last_index + 2] == 'i')
-                {
-                  token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 2];
-                  if (codeAry.data[last_index + 3] == 'n' && (codeAry.data[last_index + 4] == ' ' || codeAry.data[last_index + 4] == '\n'))
-                  {
-                    token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 3];
-                    token.class = beginsym;
-                    i += 4;
-                  }
-                }
-              }
-            }
-          }
-
-          else if (codeAry.data[i] == 'c')
-          {
-            token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
-            if (codeAry.data[last_index] == 'a')
-            {
-              token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index];
-              if (codeAry.data[last_index + 1] == 'l')
-              {
-                token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 1];
-                if (codeAry.data[last_index + 2] == 'l')
-                {
-                  token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 2];
-                  token.class = callsym;
-                  i += 3;
-                }
-              }
-            }
-            else if (codeAry.data[last_index] == 'o')
-            {
-              token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index];
-              if (codeAry.data[last_index == 'n'])
-              {
-                token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 1];
-                if (codeAry.data[last_index == 's'])
-                {
-                  token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 2];
-                  if (codeAry.data[last_index == 't'])
-                  {
-                    token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 3];
-                    token.class = constsym;
-                    i += 4;
-                  }
-                }
-              }
-            }
-          }
-
-          */
-
-
       } //End Switch
 
     } //End For
 
 }  //End Function
+
 
 void outputCleanTxt()
 {
@@ -542,4 +513,13 @@ int isLetter(char myChar)
         return 1;
     else
         return 0;
+}
+
+
+char* IntToString(int number)
+{
+  char* str = malloc(sizeof(char) * 15);
+  sprintf(str, "%d", number);
+  
+  return str;
 }

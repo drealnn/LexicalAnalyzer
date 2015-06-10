@@ -14,6 +14,7 @@ typedef struct
 
 void vectorInit(vector* vec);
 void vectorAppend(vector* vec, char val);
+void vectorAppendString(vector* vec, char* val);
 char vectorGet(vector* vec, int index);
 void vectorFree(vector* vec);
 void printVector(vector* vec);
