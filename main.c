@@ -439,3 +439,19 @@ int isSpecial(char myChar)
         return 1;
 
 }
+
+int isDigit(char myChar)
+{
+    if (myChar >= 48 && myChar <= 58)
+        return 1;
+    else
+        return 0;
+}
+
+int isLetter(char myChar)
+{
+    if ( (myChar >= 65 && myChar <= 90) || (myChar >= 97 && myChar <= 122) )
+        return 1;
+    else
+        return 0;
+}
