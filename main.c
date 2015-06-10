@@ -67,6 +67,7 @@ void cleanLexeme()
 void lexemeTable()
 {
     int i, j;
+    int state = 0;
     int last_index;
 
     token.class = -1;
@@ -78,269 +79,356 @@ void lexemeTable()
 
     vectorAppend(&codeAry, ' ');
 
-    for (i = 0; i < codeAry.size - 1; i++)
+    while (i < codeAry.size - 1)
     {
       last_index = i+1;
-      token.class = -1;
-      cleanLexeme();
+
+      // State 0: reserved tokens, State 1: identifiers, State 2: numbers
+      switch (state)
+      {
+        case(0):
 
       // check for rel-ops-------------------------------
 
-      if (codeAry.data[i] == '=')
-      {
-        token.class = eqlsym;
-        token.lexeme[strlen(token.lexeme)] = '=';
-      }
-      else if (codeAry.data[i] == '<')
-      {
-        token.class = lessym;
-        token.lexeme[strlen(token.lexeme)] = '<';
-
-        // check next character for additional rel-ops
-        if (codeAry.data[last_index] == '=')
-        {
-          token.class = leqsym;
-          token.lexeme[strlen(token.lexeme)] = '=';
-          i += 1;
-        }
-        else  if (codeAry.data[last_index] == '>')
-        {
-          token.class = neqsym;
-          token.lexeme[strlen(token.lexeme)] = '>';
-          i += 1;
-        }
-
-      }
-      else if (codeAry.data[i] == '>')
-      {
-        token.class = gtrsym;
-        token.lexeme[strlen(token.lexeme)] = '>';
-
-        // check next character for additional rel-ops
-        if (codeAry.data[last_index] == '=')
-        {
-          token.class = geqsym;
-          token.lexeme[strlen(token.lexeme)] = '=';
-          i += 1;
-        }
-      }
-
-      // Check for Special Symbols -----------------------
-
-      else if (codeAry.data[i] == ';')
-      {
-        token.class = semicolonsym;
-        token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
-      }
-      else if (codeAry.data[i] == ',')
-      {
-        token.class = commasym;
-        token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
-      }
-      else if (codeAry.data[i] == '.')
-      {
-        token.class = periodsym;
-        token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
-      }
-      else if (codeAry.data[i] == '(')
-      {
-        token.class = lparentsym;
-        token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
-      }
-      else if (codeAry.data[i] == ')')
-      {
-        token.class = rparentsym;
-        token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
-      }
-      else if (codeAry.data[i] == '+')
-      {
-        token.class = plussym;
-        token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
-      }
-      else if (codeAry.data[i] == '-')
-      {
-        token.class = minussym;
-        token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
-      }
-      else if (codeAry.data[i] == '*')
-      {
-        token.class = multsym;
-        token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
-      }
-      else if (codeAry.data[i] == '/')
-      {
-        token.class = slashsym;
-        token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
-      }
-      else if (codeAry.data[i] == ':')
-      {
-        token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
-        if (codeAry.data[last_index] == '=')
-        {
-          token.class = becomessym;
-          token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index];
-          i += 1;
-        }
-      }
-
-      else if (hasWordAtPos("begin", i))
-      {
-          strcat(token.lexeme, "begin");
-          token.class = beginsym;
-          i += 4;
-      }
-      else if (hasWordAtPos("call", i))
-      {
-          strcat(token.lexeme, "call");
-          token.class = callsym;
-          i += 3;
-      }
-      else if (hasWordAtPos("const", i))
-      {
-          strcat(token.lexeme, "const");
-          token.class = constsym;
-          i += 4;
-      }
-      else if (hasWordAtPos("do", i))
-      {
-          strcat(token.lexeme, "do");
-          token.class = dosym;
-          i += 1;
-      }
-      else if (hasWordAtPos("else", i))
-      {
-          strcat(token.lexeme, "else");
-          token.class = elsesym;
-          i += 3;
-      }
-      else if (hasWordAtPos("end", i))
-      {
-          strcat(token.lexeme, "end");
-          token.class = endsym;
-          i += 2;
-      }
-      else if (hasWordAtPos("if", i))
-      {
-          strcat(token.lexeme, "if");
-          token.class = ifsym;
-          i += 1;
-      }
-      else if (hasWordAtPos("odd", i))
-      {
-          strcat(token.lexeme, "odd");
-          token.class = oddsym;
-          i += 2;
-      }
-      else if (hasWordAtPos("procedure", i))
-      {
-          strcat(token.lexeme, "procedure");
-          token.class = procsym;
-          i += 8;
-      }
-      else if (hasWordAtPos("read", i))
-      {
-          strcat(token.lexeme, "read");
-          token.class = readsym;
-          i += 3;
-      }
-      else if (hasWordAtPos("then", i))
-      {
-          strcat(token.lexeme, "then");
-          token.class = thensym;
-          i += 3;
-      }
-      else if (hasWordAtPos("var", i))
-      {
-          strcat(token.lexeme, "var");
-          token.class = varsym;
-          i += 2;
-      }
-      else if (hasWordAtPos("while", i))
-      {
-          strcat(token.lexeme, "while");
-          token.class = whilesym;
-          i += 4;
-      }
-      else if (hasWordAtPos("write", i))
-      {
-          strcat(token.lexeme, "write");
-          token.class = writesym;
-          i += 4;
-      }
-
-
-
-      // Check first letter of Reserved Words--------------------------------------------
-
-      // Will need to check at end for rel-ops and special symbols, begin<=123 is lexically correct
-      // Will make isRelOpOrSpecial(int index) function
-
-      /*
-      else if (codeAry.data[i] == 'b')
-      {
-        token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
-        if (codeAry.data[last_index] == 'e')
-        {
-          token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index];
-          if (codeAry.data[last_index + 1] == 'g')
+          if (codeAry.data[i] == '=')
           {
-            token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 1];
-            if (codeAry.data[last_index + 2] == 'i')
+            token.class = eqlsym;
+            token.lexeme[strlen(token.lexeme)] = '=';
+          }
+          else if (codeAry.data[i] == '<')
+          {
+            token.class = lessym;
+            token.lexeme[strlen(token.lexeme)] = '<';
+
+            // check next character for additional rel-ops
+            if (codeAry.data[last_index] == '=')
             {
-              token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 2];
-              if (codeAry.data[last_index + 3] == 'n' && (codeAry.data[last_index + 4] == ' ' || codeAry.data[last_index + 4] == '\n'))
-              {
-                token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 3];
-                token.class = beginsym;
-                i += 4;
-              }
+              token.class = leqsym;
+              token.lexeme[strlen(token.lexeme)] = '=';
+              i += 1;
+            }
+            else  if (codeAry.data[last_index] == '>')
+            {
+              token.class = neqsym;
+              token.lexeme[strlen(token.lexeme)] = '>';
+              i += 1;
+            }
+
+          }
+          else if (codeAry.data[i] == '>')
+          {
+            token.class = gtrsym;
+            token.lexeme[strlen(token.lexeme)] = '>';
+
+            // check next character for additional rel-ops
+            if (codeAry.data[last_index] == '=')
+            {
+              token.class = geqsym;
+              token.lexeme[strlen(token.lexeme)] = '=';
+              i += 1;
             }
           }
-        }
-      }
 
-      else if (codeAry.data[i] == 'c')
-      {
-        token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
-        if (codeAry.data[last_index] == 'a')
-        {
-          token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index];
-          if (codeAry.data[last_index + 1] == 'l')
+          // Check for Special Symbols -----------------------
+
+          else if (codeAry.data[i] == ';')
           {
-            token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 1];
-            if (codeAry.data[last_index + 2] == 'l')
+            token.class = semicolonsym;
+            token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
+          }
+          else if (codeAry.data[i] == ',')
+          {
+            token.class = commasym;
+            token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
+          }
+          else if (codeAry.data[i] == '.')
+          {
+            token.class = periodsym;
+            token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
+          }
+          else if (codeAry.data[i] == '(')
+          {
+            token.class = lparentsym;
+            token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
+          }
+          else if (codeAry.data[i] == ')')
+          {
+            token.class = rparentsym;
+            token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
+          }
+          else if (codeAry.data[i] == '+')
+          {
+            token.class = plussym;
+            token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
+          }
+          else if (codeAry.data[i] == '-')
+          {
+            token.class = minussym;
+            token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
+          }
+          else if (codeAry.data[i] == '*')
+          {
+            token.class = multsym;
+            token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
+          }
+          else if (codeAry.data[i] == '/')
+          {
+            token.class = slashsym;
+            token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
+          }
+          else if (codeAry.data[i] == ':')
+          {
+            token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
+            if (codeAry.data[last_index] == '=')
             {
-              token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 2];
+              token.class = becomessym;
+              token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index];
+              i += 1;
+            }
+          }
+
+          else if (hasWordAtPos("begin", i))
+          {
+              strcat(token.lexeme, "begin");
+              token.class = beginsym;
+              i += 4;
+          }
+          else if (hasWordAtPos("call", i))
+          {
+              strcat(token.lexeme, "call");
               token.class = callsym;
               i += 3;
-            }
           }
-        }
-        else if (codeAry.data[last_index] == 'o')
-        {
-          token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index];
-          if (codeAry.data[last_index == 'n'])
+          else if (hasWordAtPos("const", i))
           {
-            token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 1];
-            if (codeAry.data[last_index == 's'])
+              strcat(token.lexeme, "const");
+              token.class = constsym;
+              i += 4;
+          }
+          else if (hasWordAtPos("do", i))
+          {
+              strcat(token.lexeme, "do");
+              token.class = dosym;
+              i += 1;
+          }
+          else if (hasWordAtPos("else", i))
+          {
+              strcat(token.lexeme, "else");
+              token.class = elsesym;
+              i += 3;
+          }
+          else if (hasWordAtPos("end", i))
+          {
+              strcat(token.lexeme, "end");
+              token.class = endsym;
+              i += 2;
+          }
+          else if (hasWordAtPos("if", i))
+          {
+              strcat(token.lexeme, "if");
+              token.class = ifsym;
+              i += 1;
+          }
+          else if (hasWordAtPos("odd", i))
+          {
+              strcat(token.lexeme, "odd");
+              token.class = oddsym;
+              i += 2;
+          }
+          else if (hasWordAtPos("procedure", i))
+          {
+              strcat(token.lexeme, "procedure");
+              token.class = procsym;
+              i += 8;
+          }
+          else if (hasWordAtPos("read", i))
+          {
+              strcat(token.lexeme, "read");
+              token.class = readsym;
+              i += 3;
+          }
+          else if (hasWordAtPos("then", i))
+          {
+              strcat(token.lexeme, "then");
+              token.class = thensym;
+              i += 3;
+          }
+          else if (hasWordAtPos("var", i))
+          {
+              strcat(token.lexeme, "var");
+              token.class = varsym;
+              i += 2;
+          }
+          else if (hasWordAtPos("while", i))
+          {
+              strcat(token.lexeme, "while");
+              token.class = whilesym;
+              i += 4;
+          }
+          else if (hasWordAtPos("write", i))
+          {
+              strcat(token.lexeme, "write");
+              token.class = writesym;
+              i += 4;
+          }
+
+          // Identifier---------------------------------------
+          else if (isLetter(codeAry.data[i]))
+          {
+              token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
+              token.class = identsym;
+              state = 1;
+              i++;
+              break;
+          }
+          // Number-------------------------------------------
+          else if (isDigit(codeAry.data[i]))
+          {
+              token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
+              token.class = numbersym;
+              state = 2;
+              i++;
+              break;
+          }
+
+          i++;
+
+          //Token complete by here only when token.class != -1.
+          if (token.class > -1)
+            printf("%d %s | ", token.class, token.lexeme);
+
+          token.class = -1;
+          cleanLexeme();
+
+          break;
+
+        case(1):
+
+            // check if identifier is too long
+            if ( strlen(token.lexeme) >= 11 )
             {
-              token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 2];
-              if (codeAry.data[last_index == 't'])
+                // print error message
+                printf("Identifier too long.\n");
+                token.class = -1;
+                cleanLexeme();
+            }
+             // if the next character is a letter or a digit, proceed to next character.
+            else if ( isLetter(codeAry.data[i]) || isDigit(codeAry.data[i]) )
+            {
+                token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
+                i++;
+                break;
+            }
+
+            //Token complete by here only when token.class != -1.
+          if (token.class > -1)
+            printf("%d %s | ", token.class, token.lexeme);
+
+          token.class = -1;
+          cleanLexeme();
+
+          state = 0;
+
+          break;
+
+        case(2):
+            if (isLetter(codeAry.data[i]))
+            {
+                // print error message
+                printf("Letter in number.\n");
+                token.class = -1;
+                cleanLexeme();
+            }
+            else if (isDigit(codeAry.data[i]))
+            {
+                token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
+                i++;
+                break;
+            }
+
+             //Token complete by here only when token.class != -1.
+          if (token.class > -1)
+            printf("%d %s | ", token.class, token.lexeme);
+
+          token.class = -1;
+          cleanLexeme();
+
+          state = 0;
+
+          break;
+
+
+          // Check first letter of Reserved Words--------------------------------------------
+
+          // Will need to check at end for rel-ops and special symbols, begin<=123 is lexically correct
+          // Will make isRelOpOrSpecial(int index) function
+
+          /*
+          else if (codeAry.data[i] == 'b')
+          {
+            token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
+            if (codeAry.data[last_index] == 'e')
+            {
+              token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index];
+              if (codeAry.data[last_index + 1] == 'g')
               {
-                token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 3];
-                token.class = constsym;
-                i += 4;
+                token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 1];
+                if (codeAry.data[last_index + 2] == 'i')
+                {
+                  token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 2];
+                  if (codeAry.data[last_index + 3] == 'n' && (codeAry.data[last_index + 4] == ' ' || codeAry.data[last_index + 4] == '\n'))
+                  {
+                    token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 3];
+                    token.class = beginsym;
+                    i += 4;
+                  }
+                }
               }
             }
           }
-        }
-      }
 
-      */
+          else if (codeAry.data[i] == 'c')
+          {
+            token.lexeme[strlen(token.lexeme)] = codeAry.data[i];
+            if (codeAry.data[last_index] == 'a')
+            {
+              token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index];
+              if (codeAry.data[last_index + 1] == 'l')
+              {
+                token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 1];
+                if (codeAry.data[last_index + 2] == 'l')
+                {
+                  token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 2];
+                  token.class = callsym;
+                  i += 3;
+                }
+              }
+            }
+            else if (codeAry.data[last_index] == 'o')
+            {
+              token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index];
+              if (codeAry.data[last_index == 'n'])
+              {
+                token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 1];
+                if (codeAry.data[last_index == 's'])
+                {
+                  token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 2];
+                  if (codeAry.data[last_index == 't'])
+                  {
+                    token.lexeme[strlen(token.lexeme)] = codeAry.data[last_index + 3];
+                    token.class = constsym;
+                    i += 4;
+                  }
+                }
+              }
+            }
+          }
 
-      //Token complete by here only when token.class != -1.
-      if (token.class > -1)
-        printf("%d %s | ", token.class, token.lexeme);
+          */
+
+
+      } //End Switch
+
     } //End For
 
 }  //End Function
