@@ -30,6 +30,8 @@ vector aryLexList; // For lexemelist.txt
 
 
 void outputCleanTxt();          // creates cleaninput.txt and puts input into code array
+void outputLexTable();          // creates lexemetable.txt
+void outputLexList();          // creates lexemelist.txt
 void lexemeTable();             // creates lexeme table by analyzing code array character by character through deterministic finite automaton
 int isLetter(char myChar);      // checks if character is [A-Ba-B]
 int isDigit(char myChar);       // checks if character is [0-9]
@@ -53,10 +55,8 @@ int main()
     //printf("%d\n", hasWordAtPos("var", 0));
 
     lexemeTable();
-    printVector(&aryLexTable);
-  
-  
-    printf("\n");
+    outputLexTable();
+    outputLexList();
    // printf("%d\n", codeAry.size);
    // printf("%d\n", codeAry.capacity);
    //vectorFree(&codeAry);
@@ -84,7 +84,7 @@ void lexemeTable()
   
     // Setting up the header for lexemetable.txt
     vectorAppendString(&aryLexTable, "lexeme\t\ttoken type\n");
-  // At the end of this function (lexemeTable()) the vector aryLexTable contains the character data for lexemetable.txt completely and correctly (as far as I know)
+    // At the end of this function (lexemeTable()) the vector aryLexTable contains the character data for lexemetable.txt completely and correctly (as far as I know)
 
     //Something needs to be done to check that codeAry.data[i+n] isn't index out of bounds
     //before attempting to access it to avoid Index Out of Bounds exceptions or seg faults.
@@ -314,9 +314,17 @@ void lexemeTable()
         if (token.class > -1)
         {
           vectorAppendString(&aryLexTable, token.lexeme);
-          vectorAppendString(&aryLexTable, "\t\t");
+          vectorAppendString(&aryLexTable, "\t\t\t\t\t");
           vectorAppendString(&aryLexTable, IntToString(token.class));
           vectorAppend(&aryLexTable, '\n');
+          
+          vectorAppendString(&aryLexList, IntToString(token.class));
+          vectorAppendString(&aryLexList, " ");
+          if (token.class == 2 || token.class == 3)
+          {
+            vectorAppendString(&aryLexList, token.lexeme);
+            vectorAppendString(&aryLexList, " ");
+          }
         }
           token.class = -1;
           cleanLexeme();
@@ -341,17 +349,21 @@ void lexemeTable()
                 break;
             }
 
-            //Token complete by here only when token.class != -1.
-        
-          //if (token.class > -1)
-          //  printf("%d %s | ", token.class, token.lexeme);
         
         if (token.class > -1)
         {
           vectorAppendString(&aryLexTable, token.lexeme);
-          vectorAppendString(&aryLexTable, "\t\t");
+          vectorAppendString(&aryLexTable, "\t\t\t\t\t");
           vectorAppendString(&aryLexTable, IntToString(token.class));
           vectorAppend(&aryLexTable, '\n');
+          
+          vectorAppendString(&aryLexList, IntToString(token.class));
+          vectorAppendString(&aryLexList, " ");
+          if (token.class == 2 || token.class == 3)
+          {
+            vectorAppendString(&aryLexList, token.lexeme);
+            vectorAppendString(&aryLexList, " ");
+          }
         }
           token.class = -1;
           cleanLexeme();
@@ -383,9 +395,17 @@ void lexemeTable()
         if (token.class > -1)
         {
           vectorAppendString(&aryLexTable, token.lexeme);
-          vectorAppendString(&aryLexTable, "\t\t");
+          vectorAppendString(&aryLexTable, "\t\t\t\t\t");
           vectorAppendString(&aryLexTable, IntToString(token.class));
           vectorAppend(&aryLexTable, '\n');
+          
+          vectorAppendString(&aryLexList, IntToString(token.class));
+          vectorAppendString(&aryLexList, " ");
+          if (token.class == 2 || token.class == 3)
+          {
+            vectorAppendString(&aryLexList, token.lexeme);
+            vectorAppendString(&aryLexList, " ");
+          }
         }
 
 
@@ -466,6 +486,21 @@ void outputCleanTxt()
 
     fclose(fptr);
     fclose(outPtr);
+}
+
+void outputLexTable()
+{
+  FILE* outPtr = fopen("lexemetable.txt", "w");
+  
+  fprintf(outPtr, "%s", aryLexTable.data);
+  
+}
+
+void outputLexList()
+{
+  FILE* outPtr = fopen("lexemelist.txt", "w");
+  
+  fprintf(outPtr, "%s", aryLexList.data);
 }
 
 int hasWordAtPos(char * subStr, int index)
