@@ -47,7 +47,7 @@ int main()
     vectorInit(&codeAry);
     vectorInit(&aryLexTable);
     vectorInit(&aryLexList);
-  
+
     outputCleanTxt();
 
 
@@ -79,9 +79,10 @@ void lexemeTable()
     int state = 0;
     int last_index;
 
+    i = 0;
     token.class = -1;
     cleanLexeme();
-  
+
     // Setting up the header for lexemetable.txt
     vectorAppendString(&aryLexTable, "lexeme\t\ttoken type\n");
     // At the end of this function (lexemeTable()) the vector aryLexTable contains the character data for lexemetable.txt completely and correctly (as far as I know)
@@ -307,17 +308,17 @@ void lexemeTable()
           i++;
 
           //Token complete by here only when token.class != -1.
-        
+
           //if (token.class > -1)
           //  printf("%d %s | ", token.class, token.lexeme);
-        
+
         if (token.class > -1)
         {
           vectorAppendString(&aryLexTable, token.lexeme);
           vectorAppendString(&aryLexTable, "\t\t\t\t\t");
           vectorAppendString(&aryLexTable, IntToString(token.class));
           vectorAppend(&aryLexTable, '\n');
-          
+
           vectorAppendString(&aryLexList, IntToString(token.class));
           vectorAppendString(&aryLexList, " ");
           if (token.class == 2 || token.class == 3)
@@ -349,14 +350,14 @@ void lexemeTable()
                 break;
             }
 
-        
+
         if (token.class > -1)
         {
           vectorAppendString(&aryLexTable, token.lexeme);
           vectorAppendString(&aryLexTable, "\t\t\t\t\t");
           vectorAppendString(&aryLexTable, IntToString(token.class));
           vectorAppend(&aryLexTable, '\n');
-          
+
           vectorAppendString(&aryLexList, IntToString(token.class));
           vectorAppendString(&aryLexList, " ");
           if (token.class == 2 || token.class == 3)
@@ -388,17 +389,17 @@ void lexemeTable()
             }
 
           //Token complete by here only when token.class != -1.
-        
+
           //if (token.class > -1)
           //  printf("%d %s | ", token.class, token.lexeme);
-        
+
         if (token.class > -1)
         {
           vectorAppendString(&aryLexTable, token.lexeme);
           vectorAppendString(&aryLexTable, "\t\t\t\t\t");
           vectorAppendString(&aryLexTable, IntToString(token.class));
           vectorAppend(&aryLexTable, '\n');
-          
+
           vectorAppendString(&aryLexList, IntToString(token.class));
           vectorAppendString(&aryLexList, " ");
           if (token.class == 2 || token.class == 3)
@@ -420,6 +421,9 @@ void lexemeTable()
       } //End Switch
 
     } //End For
+
+    vectorAppend(&aryLexList, '\0');
+    vectorAppend(&aryLexTable, '\0');
 
 }  //End Function
 
@@ -491,15 +495,15 @@ void outputCleanTxt()
 void outputLexTable()
 {
   FILE* outPtr = fopen("lexemetable.txt", "w");
-  
+
   fprintf(outPtr, "%s", aryLexTable.data);
-  
+
 }
 
 void outputLexList()
 {
   FILE* outPtr = fopen("lexemelist.txt", "w");
-  
+
   fprintf(outPtr, "%s", aryLexList.data);
 }
 
@@ -536,7 +540,7 @@ int isSpecial(char myChar)
 
 int isDigit(char myChar)
 {
-    if (myChar >= 48 && myChar <= 58)
+    if (myChar >= 48 && myChar <= 57)
         return 1;
     else
         return 0;
@@ -555,6 +559,6 @@ char* IntToString(int number)
 {
   char* str = malloc(sizeof(char) * 15);
   sprintf(str, "%d", number);
-  
+
   return str;
 }
